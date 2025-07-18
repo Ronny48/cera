@@ -40,8 +40,8 @@
                               <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Login" />
                               <!-- Username Field -->
                               <VBox spacing="4">
-                                 <Label style="-fx-font-size: 13px; -fx-text-fill: #333;" text="Username:" />
-                                 <TextField fx:id="usernameField" promptText="Enter your username" style="-fx-font-size: 13px;" />
+                                 <Label style="-fx-font-size: 13px; -fx-text-fill: #333;" text="E-mail:" />
+                                 <TextField fx:id="usernameField" promptText="Enter your e-mail" style="-fx-font-size: 13px;" />
                               </VBox>
                               <!-- Password Field -->
                               <VBox spacing="4">

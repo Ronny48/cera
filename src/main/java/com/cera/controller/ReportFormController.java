@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.cera.App;
+import com.cera.ReportDAO;
+import com.cera.AttachmentDAO;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
@@ -69,15 +71,11 @@ public class ReportFormController implements Initializable {
   @FXML
   private VBox fileUploadArea;
   @FXML
-  private VBox liveIncidentArea;
-  @FXML
   private Label statusLabel;
   @FXML
   private ProgressIndicator progressIndicator;
   @FXML
   private VBox attachmentsContainer;
-  @FXML
-  private Label recordingStatusLabel;
 
   private String selectedCategory = null;
   private List<File> uploadedFiles = new ArrayList<>();
@@ -89,7 +87,6 @@ public class ReportFormController implements Initializable {
     setupLocationCombo();
     setupCategoryButtons();
     setupFileUploadArea();
-    setupLiveIncidentArea();
     setupFormValidation();
 
     // Hide progress indicator initially
@@ -175,16 +172,6 @@ public class ReportFormController implements Initializable {
       // Add tooltip
       Tooltip tooltip = new Tooltip("Click to browse files or drag and drop files here");
       Tooltip.install(fileUploadArea, tooltip);
-    }
-  }
-
-  private void setupLiveIncidentArea() {
-    if (liveIncidentArea != null) {
-      liveIncidentArea.setOnMouseClicked(e -> startLiveRecording());
-
-      // Add tooltip
-      Tooltip tooltip = new Tooltip("Click to start live recording");
-      Tooltip.install(liveIncidentArea, tooltip);
     }
   }
 
@@ -302,108 +289,6 @@ public class ReportFormController implements Initializable {
     }
   }
 
-  private void startLiveRecording() {
-    if (!isRecording) {
-      isRecording = true;
-      if (recordingStatusLabel != null) {
-        recordingStatusLabel.setText("Camera Active");
-        recordingStatusLabel.setStyle("-fx-text-fill: #FF4444; -fx-font-weight: bold;");
-      }
-
-      // Show camera options dialog
-      Alert alert = new Alert(AlertType.CONFIRMATION);
-      alert.setTitle("Camera Options");
-      alert.setHeaderText("Choose camera action");
-      alert.setContentText("What would you like to do with the camera?");
-
-      ButtonType photoButton = new ButtonType("Take Photo");
-      ButtonType videoButton = new ButtonType("Record Video");
-      ButtonType cancelButton = new ButtonType("Cancel", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-
-      alert.getButtonTypes().setAll(photoButton, videoButton, cancelButton);
-
-      alert.showAndWait().ifPresent(response -> {
-        if (response == photoButton) {
-          takePhoto();
-        } else if (response == videoButton) {
-          recordVideo();
-        } else {
-          // Cancel recording
-          isRecording = false;
-          if (recordingStatusLabel != null) {
-            recordingStatusLabel.setText("");
-            recordingStatusLabel.setStyle("-fx-text-fill: #BDBDBD;");
-          }
-        }
-      });
-
-      // Add recording animation
-      if (liveIncidentArea != null) {
-        FadeTransition pulse = new FadeTransition(Duration.millis(1000), liveIncidentArea);
-        pulse.setFromValue(1.0);
-        pulse.setToValue(0.3);
-        pulse.setCycleCount(Timeline.INDEFINITE);
-        pulse.setAutoReverse(true);
-        pulse.play();
-      }
-    }
-  }
-
-  private void takePhoto() {
-    // Simulate taking a photo
-    showNotification("Taking photo...", "info");
-
-    // Simulate processing time
-    new Thread(() -> {
-      try {
-        Thread.sleep(2000);
-        javafx.application.Platform.runLater(() -> {
-          showNotification("Photo captured successfully!", "success");
-          isRecording = false;
-          if (recordingStatusLabel != null) {
-            recordingStatusLabel.setText("Photo Saved");
-            recordingStatusLabel.setStyle("-fx-text-fill: #44FF44; -fx-font-weight: bold;");
-          }
-        });
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }).start();
-  }
-
-  private void recordVideo() {
-    // Simulate recording video
-    showNotification("Starting video recording...", "info");
-
-    // Simulate recording time
-    new Thread(() -> {
-      try {
-        Thread.sleep(3000);
-        javafx.application.Platform.runLater(() -> {
-          showNotification("Video recording completed!", "success");
-          isRecording = false;
-          if (recordingStatusLabel != null) {
-            recordingStatusLabel.setText("Video Saved");
-            recordingStatusLabel.setStyle("-fx-text-fill: #44FF44; -fx-font-weight: bold;");
-          }
-        });
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }).start();
-  }
-
-  private void stopLiveRecording() {
-    if (isRecording) {
-      isRecording = false;
-      if (recordingStatusLabel != null) {
-        recordingStatusLabel.setText("Recording stopped");
-        recordingStatusLabel.setStyle("-fx-text-fill: #44FF44;");
-      }
-      showNotification("Recording saved!", "success");
-    }
-  }
-
   private boolean validateForm() {
     boolean isValid = selectedCategory != null &&
         locationCombo.getValue() != null &&
@@ -491,29 +376,42 @@ public class ReportFormController implements Initializable {
       showNotification("Please fill in all required fields", "error");
       return;
     }
-
-    // Show progress indicator
-    if (progressIndicator != null) {
-      progressIndicator.setVisible(true);
-    }
-
-    // Simulate submission process
-    new Thread(() -> {
-      try {
-        Thread.sleep(2000); // Simulate processing time
-
-        javafx.application.Platform.runLater(() -> {
-          if (progressIndicator != null) {
-            progressIndicator.setVisible(false);
-          }
-
-          // Show success animation
-          showSuccessDialog();
-        });
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+    String category = selectedCategory;
+    String location = locationCombo.getValue();
+    String description = descriptionArea.getText();
+    // Save report (anonymous)
+    boolean reportSaved = ReportDAO.createReport(null, category, location, description, true);
+    if (reportSaved) {
+      // Get the latest report ID (assume it's the last inserted row)
+      int reportId = getLastInsertedReportId();
+      // Save attachments
+      for (File file : uploadedFiles) {
+        AttachmentDAO.addAttachment(reportId, file.getAbsolutePath(), getFileType(file));
       }
-    }).start();
+      showNotification("Report submitted successfully!", "success");
+      showSuccessDialog();
+    } else {
+      showNotification("Failed to submit report", "error");
+    }
+  }
+
+  private int getLastInsertedReportId() {
+    // Simple way: fetch all reports and get the first (most recent)
+    java.util.List<ReportDAO.Report> reports = ReportDAO.getAllReports();
+    return reports.isEmpty() ? -1 : reports.get(0).id;
+  }
+
+  private String getFileType(File file) {
+    String name = file.getName().toLowerCase();
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif"))
+      return "image";
+    if (name.endsWith(".mp4") || name.endsWith(".avi"))
+      return "video";
+    if (name.endsWith(".mp3") || name.endsWith(".wav"))
+      return "audio";
+    if (name.endsWith(".pdf") || name.endsWith(".doc") || name.endsWith(".docx") || name.endsWith(".txt"))
+      return "document";
+    return "other";
   }
 
   private void showSuccessDialog() {
@@ -576,4 +474,29 @@ public class ReportFormController implements Initializable {
     });
   }
 
+  @FXML
+  private void handleAvatarClick() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to logout?", ButtonType.YES, ButtonType.NO);
+    alert.setTitle("Logout");
+    alert.setHeaderText(null);
+    alert.showAndWait().ifPresent(response -> {
+      if (response == ButtonType.YES) {
+        com.cera.App.setCurrentUserId(null);
+        try {
+          com.cera.App.setRoot("logIn");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+  }
+
+  @FXML
+  private void goHome() {
+    try {
+      com.cera.App.setRoot("home");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

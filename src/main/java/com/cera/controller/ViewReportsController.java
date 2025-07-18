@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cera.App;
+import com.cera.ReportDAO;
+import com.cera.AttachmentDAO;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +20,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ButtonType;
 
 public class ViewReportsController {
 
@@ -31,56 +35,29 @@ public class ViewReportsController {
   private ComboBox<String> categoryFilter;
 
   @FXML
-  private ComboBox<String> statusFilter;
+  private Button clearFiltersBtn;
 
   @FXML
-  private Button clearFiltersBtn;
+  private ToggleButton myReportsToggle;
 
   @FXML
   private VBox reportsContainer;
 
-  private List<Report> allReports;
-  private List<Report> filteredReports;
+  private List<ReportDAO.Report> allReports;
+  private List<ReportDAO.Report> filteredReports;
 
   @FXML
   public void initialize() {
-    // Initialize sample data
-    initializeSampleReports();
-    initializeFilters();
-
-    // Set up search functionality
-    searchField.setOnKeyReleased(event -> handleSearch(null));
-  }
-
-  private void initializeSampleReports() {
-    allReports = new ArrayList<>();
-
-    // Add sample reports
-    allReports.add(new Report("🚨", "Theft Incident",
-        "Reported theft of personal belongings in the library area. Security has been notified.",
-        "Under Investigation", "Theft", LocalDateTime.now().minusHours(2)));
-
-    allReports.add(
-        new Report("⚠️", "Health Emergency", "Medical emergency in the science building. Ambulance has been called.",
-            "Resolved", "Health", LocalDateTime.now().minusDays(1)));
-
-    allReports.add(new Report("🔒", "Security Concern",
-        "Suspicious activity reported near the parking lot. Campus security is monitoring the area.",
-        "Under Investigation", "Security", LocalDateTime.now().minusDays(3)));
-
-    allReports.add(new Report("🚨", "Harassment Report",
-        "Verbal harassment reported in the student center. Counseling services have been contacted.",
-        "Resolved", "Harassment", LocalDateTime.now().minusWeeks(1)));
-
-    allReports.add(new Report("🚨", "Bullying Incident",
-        "Physical bullying reported in the cafeteria. School administration has been notified.",
-        "Under Investigation", "Bullying", LocalDateTime.now().minusDays(2)));
-
-    allReports.add(new Report("⚠️", "Fire Alarm",
-        "Fire alarm activated in the engineering building. All students evacuated safely.",
-        "Resolved", "Emergency", LocalDateTime.now().minusDays(4)));
-
+    // Fetch reports from the database
+    allReports = ReportDAO.getAllReports();
     filteredReports = new ArrayList<>(allReports);
+    initializeFilters();
+    searchField.setOnKeyReleased(event -> handleSearch(null));
+    if (myReportsToggle != null) {
+      myReportsToggle.setOnAction(e -> applyFilters(searchField.getText().toLowerCase().trim()));
+      myReportsToggle.setDisable(App.getCurrentUserId() == null);
+    }
+    updateReportsDisplay();
   }
 
   private void initializeFilters() {
@@ -88,10 +65,7 @@ public class ViewReportsController {
     categoryFilter.getItems().addAll("All Categories", "Theft", "Health", "Security", "Harassment", "Bullying",
         "Emergency", "Other");
     categoryFilter.setValue("All Categories");
-
-    // Initialize status filter
-    statusFilter.getItems().addAll("All Status", "Under Investigation", "Resolved", "Pending", "Closed");
-    statusFilter.setValue("All Status");
+    // Removed status filter initialization
   }
 
   @FXML
@@ -120,32 +94,26 @@ public class ViewReportsController {
   private void handleClearFilters(ActionEvent event) {
     searchField.clear();
     categoryFilter.setValue("All Categories");
-    statusFilter.setValue("All Status");
     applyFilters("");
   }
 
   private void applyFilters(String searchTerm) {
     filteredReports.clear();
-
     String selectedCategory = categoryFilter.getValue();
-    String selectedStatus = statusFilter.getValue();
-
-    for (Report report : allReports) {
+    boolean filterMyReports = myReportsToggle != null && myReportsToggle.isSelected() && App.getCurrentUserId() != null;
+    Integer currentUserId = App.getCurrentUserId();
+    for (ReportDAO.Report report : allReports) {
       boolean matchesSearch = searchTerm.isEmpty() ||
-          report.title.toLowerCase().contains(searchTerm) ||
+          report.category.toLowerCase().contains(searchTerm) ||
+          report.location.toLowerCase().contains(searchTerm) ||
           report.description.toLowerCase().contains(searchTerm);
-
       boolean matchesCategory = selectedCategory.equals("All Categories") ||
           report.category.equals(selectedCategory);
-
-      boolean matchesStatus = selectedStatus.equals("All Status") ||
-          report.status.equals(selectedStatus);
-
-      if (matchesSearch && matchesCategory && matchesStatus) {
+      boolean matchesUser = !filterMyReports || (report.userId != null && report.userId.equals(currentUserId));
+      if (matchesSearch && matchesCategory && matchesUser) {
         filteredReports.add(report);
       }
     }
-
     updateReportsDisplay();
   }
 
@@ -159,51 +127,51 @@ public class ViewReportsController {
       return;
     }
 
-    for (Report report : filteredReports) {
+    for (ReportDAO.Report report : filteredReports) {
       VBox reportBox = createReportBox(report);
       reportsContainer.getChildren().add(reportBox);
     }
   }
 
-  private VBox createReportBox(Report report) {
+  private VBox createReportBox(ReportDAO.Report report) {
     VBox reportBox = new VBox(8.0);
     reportBox.setStyle("-fx-background-color: #4A4A4A; -fx-background-radius: 12; -fx-padding: 16;");
-
-    // Header with icon, title, and time
     HBox header = new HBox(8.0);
     header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-    Label iconLabel = new Label(report.icon);
+    Label iconLabel = new Label(getCategoryIcon(report.category));
     iconLabel.setStyle("-fx-font-size: 20px;");
-
-    Label titleLabel = new Label(report.title);
+    Label titleLabel = new Label(report.category + " Report");
     titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
-
     Label separator = new Label("•");
     separator.setStyle("-fx-text-fill: #B38753;");
-
-    Label timeLabel = new Label(formatTimeAgo(report.timestamp));
+    Label timeLabel = new Label(report.createdAt);
     timeLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #B38753;");
-
     header.getChildren().addAll(iconLabel, titleLabel, separator, timeLabel);
-
-    // Description
     Label descriptionLabel = new Label(report.description);
     descriptionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #E6E6E6; -fx-wrap-text: true;");
-
-    // Status
+    // Attachments
+    java.util.List<AttachmentDAO.Attachment> attachments = AttachmentDAO.getAttachmentsByReportId(report.id);
+    VBox attachmentsBox = new VBox(4.0);
+    if (!attachments.isEmpty()) {
+      Label attachmentsTitle = new Label("Attachments:");
+      attachmentsTitle.setStyle("-fx-font-size: 13px; -fx-text-fill: #B38753; -fx-font-weight: bold;");
+      attachmentsBox.getChildren().add(attachmentsTitle);
+      for (AttachmentDAO.Attachment att : attachments) {
+        Label attLabel = new Label(att.filePath + " (" + att.fileType + ")");
+        attLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #F5D77C;");
+        attachmentsBox.getChildren().add(attLabel);
+      }
+    }
+    // Status HBox
     HBox statusBox = new HBox(8.0);
-    Label statusLabel = new Label("Status:");
-    statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #B38753;");
-
-    Label statusValue = new Label(report.status);
-    String statusColor = getStatusColor(report.status);
-    statusValue.setStyle("-fx-font-size: 12px; -fx-text-fill: " + statusColor + ";");
-
-    statusBox.getChildren().addAll(statusLabel, statusValue);
-
-    reportBox.getChildren().addAll(header, descriptionLabel, statusBox);
-
+    statusBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+    Label statusTitle = new Label("Status:");
+    statusTitle.setStyle("-fx-font-size: 12px; -fx-text-fill: #B38753;");
+    Label statusValue = new Label(report.resolved ? "Resolved" : "Under Investigation");
+    statusValue.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; "
+        + (report.resolved ? "-fx-text-fill: #4CAF50;" : "-fx-text-fill: #FF9800;"));
+    statusBox.getChildren().addAll(statusTitle, statusValue);
+    reportBox.getChildren().addAll(header, descriptionLabel, attachmentsBox, statusBox);
     return reportBox;
   }
 
@@ -238,6 +206,25 @@ public class ViewReportsController {
     }
   }
 
+  private String getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case "theft":
+        return "🚨";
+      case "health":
+        return "⚠️";
+      case "security":
+        return "🔒";
+      case "harassment":
+        return "🚨";
+      case "bullying":
+        return "🚨";
+      case "emergency":
+        return "⚠️";
+      default:
+        return "📄";
+    }
+  }
+
   private void showError(String title, String content) {
     Alert alert = new Alert(AlertType.ERROR);
     alert.setTitle(title);
@@ -246,22 +233,20 @@ public class ViewReportsController {
     alert.showAndWait();
   }
 
-  // Inner class to represent a report
-  private static class Report {
-    String icon;
-    String title;
-    String description;
-    String status;
-    String category;
-    LocalDateTime timestamp;
-
-    Report(String icon, String title, String description, String status, String category, LocalDateTime timestamp) {
-      this.icon = icon;
-      this.title = title;
-      this.description = description;
-      this.status = status;
-      this.category = category;
-      this.timestamp = timestamp;
-    }
+  @FXML
+  private void handleAvatarClick() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to logout?", ButtonType.YES, ButtonType.NO);
+    alert.setTitle("Logout");
+    alert.setHeaderText(null);
+    alert.showAndWait().ifPresent(response -> {
+      if (response == ButtonType.YES) {
+        com.cera.App.setCurrentUserId(null);
+        try {
+          com.cera.App.setRoot("logIn");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 }

@@ -15,9 +15,32 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private static Scene scene;
+    private static Integer currentUserId = null;
+    private static String currentUserRole = null;
+
+    public static Integer getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public static void setCurrentUserId(Integer id) {
+        currentUserId = id;
+        if (id == null) {
+            currentUserRole = null;
+        }
+    }
+
+    public static String getCurrentUserRole() {
+        return currentUserRole;
+    }
+
+    public static void setCurrentUserRole(String role) {
+        currentUserRole = role;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
+        // Initialize database
+        Database.initialize();
         // Set application icon
         try {
             Image icon = new Image(getClass().getResourceAsStream("/com/cera/assets/cera img.jpg"));
@@ -40,6 +63,9 @@ public class App extends Application {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/cera/views/" + fxml + ".fxml"));
+        if ("adminPage".equals(fxml)) {
+            fxmlLoader.setController(new com.cera.controller.AdminPageController());
+        }
         return fxmlLoader.load();
     }
 

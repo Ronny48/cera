@@ -19,6 +19,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Alert?>
 <?import javafx.scene.control.Alert.AlertType?>
+<?import javafx.scene.shape.Circle?>
 
 <AnchorPane prefHeight="700.0" prefWidth="430.0" style="-fx-background-color: #332C22;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cera.controller.ReportWithIdController">
     <children>
@@ -219,9 +220,8 @@
                                 <TextArea fx:id="descriptionArea" promptText="Describe the incident as detailed as possible" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-width: 1; -fx-border-color: #6B5A3A; -fx-text-fill: black; -fx-font-size: 14px; -fx-pref-width: 300; -fx-pref-height: 140;" wrapText="true" />
                             </VBox>
                         </VBox>
-                        <!-- File Attachment Section (at the end of the card VBox) -->
-                        <VBox alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: transparent;">
-                            <!-- Title -->
+                        <!-- File Attachment Section -->
+                        <VBox alignment="TOP_CENTER" spacing="12.0" style="-fx-background-color: transparent;">
                             <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="File Attachment" />
                             <!-- Blue Info Box -->
                             <HBox alignment="TOP_LEFT" maxWidth="340" spacing="12.0" style="-fx-background-color: #3C3C2E; -fx-background-radius: 16;">
@@ -234,15 +234,9 @@
                                         </ImageView>
                                         <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #6ED1E7;" text="Attach all the necessary files here" />
                                     </HBox>
-                                    <Label maxWidth="300.0" style="-fx-font-size: 12px; -fx-text-fill: #B6D6E7;" text="Let your report be as detailed as possible, it's very crucial and vital for the safety of the people and yourself." wrapText="true" />
+                                    <Label maxWidth="300.0" style="-fx-font-size: 12px; -fx-text-fill: #B6D6E7; -fx-wrap-text: true;" text="Let your report be as detailed as possible, it's very crucial and vital for the safety of the people and yourself." wrapText="true" />
                                 </VBox>
                             </HBox>
-                            <!-- Status Label for notifications -->
-                            <Label fx:id="statusLabel" alignment="CENTER" maxWidth="340" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8;" visible="false" />
-                            
-                            <!-- Progress Indicator -->
-                            <ProgressIndicator fx:id="progressIndicator" maxWidth="40" maxHeight="40" style="-fx-progress-color: #F5D77C;" visible="false" />
-                            
                             <!-- Attachments Area -->
                             <VBox maxWidth="340" spacing="8.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 20; -fx-padding: 16;">
                                 <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Attachments" />
@@ -258,46 +252,32 @@
                                 <!-- Attachments Container for uploaded files -->
                                 <VBox fx:id="attachmentsContainer" spacing="4.0" visible="false" />
                             </VBox>
-                            
-                            <!-- Report live incident Area -->
-                            <VBox maxWidth="340" spacing="8.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 20; -fx-padding: 16;">
-                                <HBox alignment="CENTER_LEFT" spacing="8.0">
-                                    <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Report live incident" />
-                                    <Label fx:id="recordingStatusLabel" style="-fx-font-size: 12px; -fx-text-fill: #BDBDBD;" text="" />
-                                </HBox>
-                                <VBox fx:id="liveIncidentArea" alignment="CENTER" maxWidth="308" minHeight="120" spacing="8.0" style="-fx-background-color: #332C22; -fx-background-radius: 16; -fx-border-radius: 16; -fx-border-width: 2; -fx-border-color: #6B5A3A; -fx-cursor: hand; -fx-padding: 24;">
-                                    <ImageView fitHeight="32.0" fitWidth="32.0">
-                                        <image>
-                                            <Image url="@../assets/camera.png" />
-                                        </image>
-                                    </ImageView>
-                                    <Label style="-fx-font-size: 13px; -fx-text-fill: #BDBDBD;" text="Tap to start live recording" />
-                                    <Label style="-fx-font-size: 11px; -fx-text-fill: #BDBDBD;" text="Record video/audio evidence in real-time" />
-                                </VBox>
-                            </VBox>
-                            <!-- Bottom Section with rounded corners and background -->
-                            <VBox alignment="CENTER" spacing="18.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 0 0 32 32; -fx-padding: 24 12 48 12; -fx-effect: dropshadow(gaussian, #00000044, 8, 0.2, 0, 2);">
-                                <HBox alignment="CENTER" spacing="16.0">
-                                    <Button style="-fx-background-color: #BCA16A; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="Cancel" onAction="#handleBack">
-                                        <graphic>
-                                            <ImageView fitHeight="20.0" fitWidth="20.0">
-                                                <image>
-                                                    <Image url="@../assets/cancel.png" />
-                                                </image>
-                                            </ImageView>
-                                        </graphic>
-                                    </Button>
-                                    <Button fx:id="submitBtn" style="-fx-background-color: #F5D77C; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="Submit" onAction="#handleSubmit">
-                                        <graphic>
-                                            <ImageView fitHeight="20.0" fitWidth="20.0">
-                                                <image>
-                                                    <Image url="@../assets/submit.png" />
-                                                </image>
-                                            </ImageView>
-                                        </graphic>
-                                    </Button>
-                                </HBox>
-                            </VBox>
+                        </VBox>
+                        <!-- Report live incident Area -->
+                        <!-- The VBox for 'Report live incident' has been removed -->
+                        
+                        <!-- Bottom Section with rounded corners and background -->
+                        <VBox alignment="CENTER" spacing="18.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 0 0 32 32; -fx-padding: 24 12 48 12; -fx-effect: dropshadow(gaussian, #00000044, 8, 0.2, 0, 2);">
+                            <HBox alignment="CENTER" spacing="16.0">
+                                <Button style="-fx-background-color: #BCA16A; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="Cancel" onAction="#handleBack">
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                                            <image>
+                                                <Image url="@../assets/cancel.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="submitBtn" style="-fx-background-color: #F5D77C; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="Submit" onAction="#handleSubmit">
+                                    <graphic>
+                                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                                            <image>
+                                                <Image url="@../assets/submit.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </HBox>
                         </VBox>
                     </children>
                 </VBox>
@@ -307,11 +287,31 @@
         <!-- Bottom Bar - Fixed at bottom -->
         <HBox alignment="CENTER" prefHeight="48.0" spacing="8.0" style="-fx-background-color: #A87A44;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
-                <ImageView fitHeight="24.0" fitWidth="24.0">
-                    <image>
-                        <Image url="@../assets/Home.png" />
-                    </image>
-                </ImageView>
+                <Button fx:id="homeIconButton" onAction="#goHome" style="-fx-background-color: transparent;">
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../assets/home.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </children>
+        </HBox>
+        <HBox alignment="TOP_RIGHT" spacing="0" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <Button fx:id="avatarButton" onAction="#handleAvatarClick" style="-fx-background-color: transparent; -fx-padding: 8;">
+                    <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0">
+                            <clip>
+                                <Circle centerX="16" centerY="16" radius="16" />
+                            </clip>
+                            <image>
+                                <Image url="@../assets/avatar.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </children>
         </HBox>
     </children>

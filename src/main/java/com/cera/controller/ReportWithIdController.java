@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.cera.App;
+import com.cera.ReportDAO;
+import com.cera.AttachmentDAO;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,7 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
@@ -59,14 +61,9 @@ public class ReportWithIdController implements Initializable {
   private ProgressIndicator progressIndicator;
   @FXML
   private Label statusLabel;
-  @FXML
-  private VBox liveIncidentArea;
-  @FXML
-  private Label recordingStatusLabel;
 
   private String selectedCategory = null;
   private List<File> attachedFiles = new ArrayList<>();
-  private boolean isRecording = false;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -85,8 +82,6 @@ public class ReportWithIdController implements Initializable {
     fileUploadArea.setOnDragOver(this::handleDragOver);
     fileUploadArea.setOnDragDropped(this::handleDragDropped);
     updateAttachmentsDisplay();
-    // Live recording simulation
-    liveIncidentArea.setOnMouseClicked(e -> handleLiveRecording());
   }
 
   @FXML
@@ -176,67 +171,88 @@ public class ReportWithIdController implements Initializable {
     });
   }
 
-  private void handleLiveRecording() {
-    if (isRecording) {
-      showStatus("Already recording!", true);
-      return;
-    }
-    isRecording = true;
-    recordingStatusLabel.setText("Recording...");
-    progressIndicator.setVisible(true);
-    // Simulate recording for 3 seconds
-    new Thread(() -> {
-      try {
-        Thread.sleep(3000);
-      } catch (InterruptedException ignored) {
-      }
-      Platform.runLater(() -> {
-        isRecording = false;
-        recordingStatusLabel.setText("Recording saved!");
-        progressIndicator.setVisible(false);
-        showStatus("Live recording attached!", false);
-      });
-    }).start();
-  }
-
   @FXML
   private void handleSubmit() {
+    String category = selectedCategory;
     String location = locationCombo.getValue();
     String description = descriptionArea.getText();
-    if (selectedCategory == null || location == null || location.isEmpty() || description == null
-        || description.isEmpty()) {
+    if (category == null || location == null || location.isEmpty() || description == null || description.isEmpty()) {
       showStatus("Please fill all required fields!", true);
       return;
     }
-    progressIndicator.setVisible(true);
-    // Simulate submission
-    new Thread(() -> {
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException ignored) {
+    Integer userId = App.getCurrentUserId();
+    boolean isAnonymous = (userId == null);
+    boolean reportSaved = ReportDAO.createReport(userId, category, location, description, isAnonymous);
+    if (reportSaved) {
+      int reportId = getLastInsertedReportId();
+      for (File file : attachedFiles) {
+        AttachmentDAO.addAttachment(reportId, file.getAbsolutePath(), getFileType(file));
       }
-      Platform.runLater(() -> {
-        progressIndicator.setVisible(false);
-        showStatus("Report submitted successfully!", false);
-        // Show success dialog
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText("Your report has been submitted successfully!");
-        alert.showAndWait();
-        try {
-          App.setRoot("home");
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      });
-    }).start();
+      showStatus("Report submitted successfully!", false);
+      // Show success dialog
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Success");
+      alert.setHeaderText(null);
+      alert.setContentText("Your report has been submitted successfully!");
+      alert.showAndWait();
+      try {
+        App.setRoot("home");
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    } else {
+      showStatus("Failed to submit report", true);
+    }
+  }
+
+  private int getLastInsertedReportId() {
+    java.util.List<ReportDAO.Report> reports = ReportDAO.getAllReports();
+    return reports.isEmpty() ? -1 : reports.get(0).id;
+  }
+
+  private String getFileType(File file) {
+    String name = file.getName().toLowerCase();
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif"))
+      return "image";
+    if (name.endsWith(".mp4") || name.endsWith(".avi"))
+      return "video";
+    if (name.endsWith(".mp3") || name.endsWith(".wav"))
+      return "audio";
+    if (name.endsWith(".pdf") || name.endsWith(".doc") || name.endsWith(".docx") || name.endsWith(".txt"))
+      return "document";
+    return "other";
   }
 
   @FXML
   private void handleBack() {
     try {
       App.setRoot("home");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @FXML
+  private void handleAvatarClick() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to logout?", ButtonType.YES, ButtonType.NO);
+    alert.setTitle("Logout");
+    alert.setHeaderText(null);
+    alert.showAndWait().ifPresent(response -> {
+      if (response == ButtonType.YES) {
+        com.cera.App.setCurrentUserId(null);
+        try {
+          com.cera.App.setRoot("logIn");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+  }
+
+  @FXML
+  private void goHome() {
+    try {
+      com.cera.App.setRoot("home");
     } catch (IOException e) {
       e.printStackTrace();
     }

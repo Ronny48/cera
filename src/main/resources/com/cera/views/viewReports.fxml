@@ -14,6 +14,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.shape.Circle?>
 
 <AnchorPane prefWidth="430.0" prefHeight="700.0" style="-fx-background-color: #332C22;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cera.controller.ViewReportsController">
     <children>
@@ -53,8 +55,8 @@
                 <!-- Filter Controls -->
                 <HBox spacing="8.0" alignment="CENTER_LEFT">
                     <ComboBox fx:id="categoryFilter" promptText="All Categories" style="-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14px; -fx-background-radius: 8; -fx-pref-height: 36;" HBox.hgrow="ALWAYS" onAction="#handleFilter" />
-                    <ComboBox fx:id="statusFilter" promptText="All Status" style="-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14px; -fx-background-radius: 8; -fx-pref-height: 36;" HBox.hgrow="ALWAYS" onAction="#handleFilter" />
                     <Button fx:id="clearFiltersBtn" text="Clear" style="-fx-background-color: #666; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 36; -fx-pref-width: 60;" onAction="#handleClearFilters" />
+                    <ToggleButton fx:id="myReportsToggle" text="My Reports" style="-fx-background-color: #B38753; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-pref-height: 36; -fx-pref-width: 100;" />
                 </HBox>
             </children>
         </VBox>
@@ -135,5 +137,21 @@
                 </VBox>
             </content>
         </ScrollPane>
+        <HBox alignment="TOP_RIGHT" spacing="0" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <Button fx:id="avatarButton" onAction="#handleAvatarClick" style="-fx-background-color: transparent; -fx-padding: 8;">
+                    <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0">
+                            <clip>
+                                <Circle centerX="16" centerY="16" radius="16" />
+                            </clip>
+                            <image>
+                                <Image url="@../assets/avatar.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </children>
+        </HBox>
     </children>
 </AnchorPane> 

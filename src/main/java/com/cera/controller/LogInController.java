@@ -7,6 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import com.cera.App;
 import java.io.IOException;
+import com.cera.UserDAO;
 
 public class LogInController {
 
@@ -34,15 +35,26 @@ public class LogInController {
       statusLabel.setText("Please enter both username and password");
       return;
     }
-
-    // TODO: Implement actual login logic here
-    statusLabel.setText("Login attempted for user: " + username);
-    System.out.println("Login attempt - Username: " + username + ", Password: " + password);
-    try {
-      App.setRoot("home");
-    } catch (IOException e) {
-      statusLabel.setText("Failed to load home page");
-      e.printStackTrace();
+    String role = UserDAO.validateLoginAndGetRole(username, password);
+    if (role != null) {
+      Integer userId = UserDAO.getUserIdByEmail(username);
+      App.setCurrentUserId(userId);
+      App.setCurrentUserRole(role);
+      statusLabel.setText("Login successful");
+      System.out.println("Login successful for user: " + username);
+      try {
+        if ("admin".equals(role)) {
+          App.setRoot("adminPage");
+        } else {
+          App.setRoot("home");
+        }
+      } catch (IOException e) {
+        statusLabel.setText("Failed to load page");
+        e.printStackTrace();
+      }
+    } else {
+      statusLabel.setText("Invalid email or password");
+      System.out.println("Login failed for user: " + username);
     }
   }
 
