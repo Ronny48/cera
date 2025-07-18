@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="16" alignment="TOP_CENTER" style="-fx-background-color: #f4f4f4; -fx-padding: 24;">
+    <Label text="Admin Dashboard - Unresolved Reports" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+    <TableView fx:id="reportsTable" prefWidth="700" prefHeight="400">
+        <columns>
+            <TableColumn fx:id="categoryCol" text="Category" prefWidth="100"/>
+            <TableColumn fx:id="locationCol" text="Location" prefWidth="120"/>
+            <TableColumn fx:id="descriptionCol" text="Description" prefWidth="200"/>
+            <TableColumn fx:id="attachmentsCol" text="Attachments" prefWidth="120"/>
+            <TableColumn fx:id="createdAtCol" text="Created At" prefWidth="120"/>
+            <TableColumn fx:id="actionCol" text="Action" prefWidth="100"/>
+        </columns>
+    </TableView>
+    <Button text="Logout" onAction="#handleLogout" style="-fx-background-color: #B38753; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 8; -fx-padding: 8 24;"/>
+</VBox> 
