@@ -1,0 +1,352 @@
+/* Report Form Styles with Animations */
+
+.root {
+  -fx-background-color: #332c22;
+}
+
+/* Button Animations */
+.incident-btn {
+  -fx-background-color: #2f2920;
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-border-width: 2;
+  -fx-border-color: transparent;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+}
+
+.incident-btn:hover {
+  -fx-background-color: #4a3f2e;
+  -fx-border-color: #6ed1e7;
+  -fx-effect: dropshadow(gaussian, #6ed1e7, 10, 0.5, 0, 0);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.incident-btn:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+.incident-btn:selected {
+  -fx-background-color: #6ed1e7;
+  -fx-text-fill: #332c22;
+  -fx-border-color: #f5d77c;
+  -fx-effect: dropshadow(gaussian, #f5d77c, 15, 0.7, 0, 0);
+}
+
+/* File Upload Area */
+.file-upload-area {
+  -fx-background-color: #332c22;
+  -fx-background-radius: 16;
+  -fx-border-radius: 16;
+  -fx-border-width: 2;
+  -fx-border-color: #6b5a3a;
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+}
+
+.file-upload-area:hover {
+  -fx-background-color: #4a3f2e;
+  -fx-border-color: #6ed1e7;
+  -fx-effect: dropshadow(gaussian, #6ed1e7, 8, 0.3, 0, 0);
+}
+
+.file-upload-area:drag-over {
+  -fx-background-color: #6ed1e7;
+  -fx-border-color: #f5d77c;
+  -fx-effect: dropshadow(gaussian, #f5d77c, 12, 0.5, 0, 0);
+}
+
+/* Live Recording Area */
+.live-recording-area {
+  -fx-background-color: #332c22;
+  -fx-background-radius: 16;
+  -fx-border-radius: 16;
+  -fx-border-width: 2;
+  -fx-border-color: #6b5a3a;
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+}
+
+.live-recording-area:hover {
+  -fx-background-color: #4a3f2e;
+  -fx-border-color: #ff4444;
+  -fx-effect: dropshadow(gaussian, #ff4444, 8, 0.3, 0, 0);
+}
+
+.live-recording-area:recording {
+  -fx-background-color: #ff4444;
+  -fx-border-color: #ff6666;
+  -fx-effect: dropshadow(gaussian, #ff4444, 15, 0.7, 0, 0);
+  -fx-animation: pulse 1s infinite;
+}
+
+/* Recording Animation */
+@keyframes pulse {
+  0% {
+    -fx-opacity: 1;
+  }
+  50% {
+    -fx-opacity: 0.5;
+  }
+  100% {
+    -fx-opacity: 1;
+  }
+}
+
+/* Submit Button */
+.submit-btn {
+  -fx-background-color: #f5d77c;
+  -fx-text-fill: #332c22;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  -fx-background-color: #ffe066;
+  -fx-effect: dropshadow(gaussian, #f5d77c, 10, 0.5, 0, 0);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.submit-btn:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+.submit-btn:disabled {
+  -fx-background-color: #666666;
+  -fx-text-fill: #999999;
+  -fx-opacity: 0.6;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  -fx-background-color: #bca16a;
+  -fx-text-fill: #332c22;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-background-radius: 10;
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  -fx-background-color: #d4b87a;
+  -fx-effect: dropshadow(gaussian, #bca16a, 10, 0.5, 0, 0);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.cancel-btn:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+  -fx-progress-color: #f5d77c;
+  -fx-background-color: transparent;
+}
+
+/* Status Labels */
+.status-success {
+  -fx-text-fill: #44ff44;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+}
+
+.status-error {
+  -fx-text-fill: #ff4444;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+}
+
+.status-info {
+  -fx-text-fill: #6ed1e7;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+}
+
+/* File Preview Items */
+.file-preview-item {
+  -fx-background-color: #4a3f2e;
+  -fx-background-radius: 8;
+  -fx-padding: 8;
+  -fx-border-radius: 8;
+  -fx-border-width: 1;
+  -fx-border-color: #6b5a3a;
+  -fx-transition: all 0.3s ease;
+}
+
+.file-preview-item:hover {
+  -fx-background-color: #5a4f3e;
+  -fx-border-color: #6ed1e7;
+  -fx-effect: dropshadow(gaussian, #6ed1e7, 5, 0.3, 0, 0);
+}
+
+/* Remove Button */
+.remove-btn {
+  -fx-background-color: #ff4444;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-background-radius: 4;
+  -fx-min-width: 20;
+  -fx-min-height: 20;
+  -fx-cursor: hand;
+  -fx-transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  -fx-background-color: #ff6666;
+  -fx-scale-x: 1.1;
+  -fx-scale-y: 1.1;
+}
+
+/* ComboBox Styling */
+.combo-box {
+  -fx-background-color: #4a3f2e;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-border-width: 1;
+  -fx-border-color: #6b5a3a;
+  -fx-text-fill: white;
+}
+
+.combo-box:hover {
+  -fx-border-color: #6ed1e7;
+  -fx-effect: dropshadow(gaussian, #6ed1e7, 5, 0.3, 0, 0);
+}
+
+.combo-box .list-cell {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+}
+
+.combo-box-popup .list-view {
+  -fx-background-color: #4a3f2e;
+  -fx-border-color: #6b5a3a;
+  -fx-border-width: 1;
+}
+
+.combo-box-popup .list-cell {
+  -fx-background-color: #4a3f2e;
+  -fx-text-fill: white;
+  -fx-padding: 8;
+}
+
+.combo-box-popup .list-cell:hover {
+  -fx-background-color: #5a4f3e;
+}
+
+/* TextArea Styling */
+.text-area {
+  -fx-background-color: #4a3f2e;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-border-width: 1;
+  -fx-border-color: #6b5a3a;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+}
+
+.text-area:hover {
+  -fx-border-color: #6ed1e7;
+  -fx-effect: dropshadow(gaussian, #6ed1e7, 5, 0.3, 0, 0);
+}
+
+.text-area .content {
+  -fx-background-color: #4a3f2e;
+}
+
+/* ScrollPane Styling */
+.scroll-pane {
+  -fx-background-color: transparent;
+  -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar {
+  -fx-background-color: #4a3f2e;
+}
+
+.scroll-pane .scroll-bar .thumb {
+  -fx-background-color: #6b5a3a;
+  -fx-background-radius: 4;
+}
+
+.scroll-pane .scroll-bar .thumb:hover {
+  -fx-background-color: #6ed1e7;
+}
+
+/* Success Animation */
+.success-animation {
+  -fx-animation: successPulse 0.5s ease-in-out;
+}
+
+@keyframes successPulse {
+  0% {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+  }
+  50% {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+  }
+  100% {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+  }
+}
+
+/* Fade In Animation */
+.fade-in {
+  -fx-animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    -fx-opacity: 0;
+  }
+  to {
+    -fx-opacity: 1;
+  }
+}
+
+/* Glow Effect for Active Elements */
+.glow-effect {
+  -fx-effect: dropshadow(gaussian, #6ed1e7, 10, 0.5, 0, 0);
+}
+
+/* Recording Status */
+.recording-active {
+  -fx-text-fill: #ff4444;
+  -fx-font-weight: bold;
+  -fx-animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    -fx-opacity: 1;
+  }
+  50% {
+    -fx-opacity: 0.5;
+  }
+  100% {
+    -fx-opacity: 1;
+  }
+}
+
+.recording-stopped {
+  -fx-text-fill: #44ff44;
+  -fx-font-weight: bold;
+}

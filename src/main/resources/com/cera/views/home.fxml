@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane prefWidth="430.0" prefHeight="700.0" style="-fx-background-color: #332C22;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cera.controller.HomeController">
+    <children>
+        <!-- ScrollPane for main content -->
+        <ScrollPane fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="48.0" style="-fx-background: transparent; -fx-background-color: transparent;" prefWidth="430.0" prefHeight="652.0">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: #332C22;" minHeight="652.0" prefWidth="430.0">
+                    <padding>
+                        <Insets top="36" bottom="24" left="12" right="12" />
+                    </padding>
+                    <children>
+                        <!-- Logo -->
+                        <StackPane>
+                            <ImageView fitHeight="70.0" fitWidth="70.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@../assets/cera img.jpg" />
+                                </image>
+                            </ImageView>
+                        </StackPane>
+                        <!-- Title -->
+                        <Label text="Campus Emergency" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <!-- Subtitle -->
+                        <Label text="Reporting" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #B38753;" />
+                        <!-- Description -->
+                        <Label wrapText="true" maxWidth="320.0" text="A secure platform for Ghanaian university campuses to report incidents anonymously or with identification. Help create a safer campus environment for everyone." style="-fx-font-size: 14px; -fx-text-fill: #E6E6E6; -fx-alignment: center;" />
+                        <!-- Buttons -->
+                        <VBox alignment="CENTER" spacing="14.0">
+                            <VBox.margin>
+                                <Insets top="16" />
+                            </VBox.margin>
+                            <children>
+                                <Button fx:id="reportAnonBtn" text="Report anonymously" style="-fx-background-color: #E6E6E6; -fx-text-fill: black; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 260; -fx-pref-height: 44;" onAction="#handleReportAnon" />
+                                <Button fx:id="reportWithIdBtn" text="Report with ID" style="-fx-background-color: #E6E6E6; -fx-text-fill: black; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 260; -fx-pref-height: 44;" onAction="#handleReportWithId" />
+                                <Button fx:id="viewReportsBtn" style="-fx-background-color: #E6E6E6; -fx-background-radius: 12; -fx-pref-width: 260; -fx-pref-height: 44;" onAction="#handleViewReports">
+                                    <graphic>
+                                        <HBox alignment="CENTER" spacing="8.0">
+                                            <ImageView fitHeight="22.0" fitWidth="22.0">
+                                                <image>
+                                                    <Image url="@../assets/submit.png" /> <!-- Replace with document icon if available -->
+                                                </image>
+                                            </ImageView>
+                                            <Label text="View Reports" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #111;" />
+                                        </HBox>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+        <!-- Bottom Bar - Fixed at bottom -->
+        <HBox alignment="CENTER" spacing="8.0" style="-fx-background-color: #A87A44;" prefHeight="48.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../assets/home.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane> 

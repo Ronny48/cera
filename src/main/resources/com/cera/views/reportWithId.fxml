@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Alert?>
+<?import javafx.scene.control.Alert.AlertType?>
+
+<AnchorPane prefHeight="700.0" prefWidth="430.0" style="-fx-background-color: #332C22;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cera.controller.ReportWithIdController">
+    <children>
+        <!-- Back Button with Image -->
+        <!-- <Button layoutX="16.0" layoutY="16.0" onAction="#handleBack" style="-fx-background-color: transparent;">
+            <graphic>
+                <ImageView fitHeight="24.0" fitWidth="24.0">
+                    <image>
+                        <Image url="@../assets/back.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button> -->
+
+        <!-- Main Content -->
+        <ScrollPane fitToHeight="true" fitToWidth="true" layoutY="48.0" prefHeight="652.0" prefWidth="430.0" style="-fx-background: transparent; -fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="48.0">
+            <content>
+                <VBox alignment="TOP_CENTER" layoutX="0.0" layoutY="0.0" prefWidth="430.0" spacing="18.0" style="-fx-background-color: #332C22;">
+                    <padding>
+                        <Insets bottom="12" left="12" right="12" top="16" />
+                    </padding>
+                    <children>
+                        <!-- Back Button with Image (top left corner inside scrollable content) -->
+                        <HBox alignment="TOP_LEFT">
+                            <Button onAction="#handleBack" style="-fx-background-color: transparent;">
+                                <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0">
+                                        <image>
+                                            <Image url="@../assets/back.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <!-- Title and Subtitle -->
+                        <VBox alignment="CENTER" maxWidth="360" spacing="4.0" style="-fx-alignment: center; -fx-padding: 16 0 0 0;">
+                            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Report With ID" />
+                            <Label alignment="CENTER" maxWidth="320.0" style="-fx-font-size: 15px; -fx-text-fill: #BDBDBD;" text="Your ID will be visible when you report" wrapText="true" />
+                        </VBox>
+                        <!-- Replace Anonymous Reporting Info with an image -->
+                        <!-- <ImageView fitHeight="80.0" fitWidth="80.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../assets/exclam.png" />
+                            </image>
+                        </ImageView> -->
+
+                        <!-- Anonymous Reporting Info Box (centered) -->
+                        <VBox alignment="CENTER" spacing="0">
+                            <HBox alignment="CENTER" maxWidth="340" spacing="12.0" style="-fx-background-color: #23404A; -fx-background-radius: 20;">
+                                <VBox spacing="4.0" style="-fx-padding: 16 16 16 16;">
+                                    <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                        <ImageView fitHeight="18.0" fitWidth="18.0">
+                                            <image>
+                                                <Image url="@../assets/exclam.png" />
+                                            </image>
+                                        </ImageView>
+                                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #6ED1E7;" text="Reporting With ID" />
+                                    </HBox>
+                           <AnchorPane>
+                              <children>
+                                 <VBox prefHeight="59.0" prefWidth="345.0">
+                                    <children>
+                                                <Label maxWidth="369.0" prefHeight="147.0" prefWidth="345.0" style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Your identity will be stored or shared. However, please note that some details in your report might help identify patterns for campus safety improvement." wrapText="true" />
+                                    </children>
+                                 </VBox>
+                              </children>
+                           </AnchorPane>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Card-like background for form content -->
+                        <VBox alignment="TOP_CENTER" maxWidth="700" spacing="16.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 32; -fx-padding: 20 12 20 12;">
+                            <!-- Incident Category (centered) -->
+                            <VBox alignment="CENTER" spacing="8.0">
+                                <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Incident Category" />
+                                <GridPane alignment="CENTER" hgap="12.0" vgap="12.0">
+                                    <children>
+                                        <Button fx:id="securityBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/security.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="security" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="theftBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/theft.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Theft" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="harassmentBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/harasment.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Harassment" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="abuseBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/Abuse.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Abuse" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="bullyBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/bully.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Bully" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="fraudBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/fraud.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Fraud" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="healthBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/health.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Health" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="otherBtn" minHeight="70" minWidth="70" onAction="#handleCategory" style="-fx-background-color: #2F2920; -fx-background-radius: 12; -fx-text-fill: white; -fx-font-weight: bold;" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                            <graphic>
+                                                <VBox alignment="CENTER" spacing="2.0">
+                                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                        <image>
+                                                            <Image url="@../assets/other.png" />
+                                                        </image>
+                                                    </ImageView>
+                                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #fff;" text="Other" />
+                                                </VBox>
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                    <columnConstraints>
+                                       <ColumnConstraints />
+                                       <ColumnConstraints />
+                                       <ColumnConstraints />
+                                       <ColumnConstraints />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                       <RowConstraints />
+                                       <RowConstraints />
+                                    </rowConstraints>
+                                </GridPane>
+                            </VBox>
+
+                            <!-- Location Dropdown (centered) -->
+                            <VBox alignment="CENTER" spacing="8.0">
+                                <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Location" />
+                                <ComboBox fx:id="locationCombo" promptText="Select incident location" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-width: 1; -fx-border-color: #6B5A3A; -fx-text-fill: black; -fx-pref-width: 360;" />
+                            </VBox>
+
+                            <!-- Description -->
+                            <VBox alignment="CENTER" spacing="8.0">
+                                <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Description" />
+                                <TextArea fx:id="descriptionArea" promptText="Describe the incident as detailed as possible" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-width: 1; -fx-border-color: #6B5A3A; -fx-text-fill: black; -fx-font-size: 14px; -fx-pref-width: 300; -fx-pref-height: 140;" wrapText="true" />
+                            </VBox>
+                        </VBox>
+                        <!-- File Attachment Section (at the end of the card VBox) -->
+                        <VBox alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: transparent;">
+                            <!-- Title -->
+                            <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="File Attachment" />
+                            <!-- Blue Info Box -->
+                            <HBox alignment="TOP_LEFT" maxWidth="340" spacing="12.0" style="-fx-background-color: #3C3C2E; -fx-background-radius: 16;">
+                                <VBox spacing="4.0" style="-fx-padding: 16 16 16 16;">
+                                    <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                        <ImageView fitHeight="20.0" fitWidth="20.0">
+                                            <image>
+                                                <Image url="@../assets/exclam.png" />
+                                            </image>
+                                        </ImageView>
+                                        <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #6ED1E7;" text="Attach all the necessary files here" />
+                                    </HBox>
+                                    <Label maxWidth="300.0" style="-fx-font-size: 12px; -fx-text-fill: #B6D6E7;" text="Let your report be as detailed as possible, it's very crucial and vital for the safety of the people and yourself." wrapText="true" />
+                                </VBox>
+                            </HBox>
+                            <!-- Status Label for notifications -->
+                            <Label fx:id="statusLabel" alignment="CENTER" maxWidth="340" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8;" visible="false" />
+                            
+                            <!-- Progress Indicator -->
+                            <ProgressIndicator fx:id="progressIndicator" maxWidth="40" maxHeight="40" style="-fx-progress-color: #F5D77C;" visible="false" />
+                            
+                            <!-- Attachments Area -->
+                            <VBox maxWidth="340" spacing="8.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 20; -fx-padding: 16;">
+                                <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Attachments" />
+                                <VBox fx:id="fileUploadArea" alignment="CENTER" maxWidth="308" minHeight="120" spacing="8.0" style="-fx-background-color: #332C22; -fx-background-radius: 16; -fx-border-radius: 16; -fx-border-width: 2; -fx-border-color: #6B5A3A; -fx-cursor: hand; -fx-padding: 24;">
+                                    <ImageView fitHeight="32.0" fitWidth="32.0">
+                                        <image>
+                                            <Image url="@../assets/add.png" />
+                                        </image>
+                                    </ImageView>
+                                    <Label style="-fx-font-size: 13px; -fx-text-fill: #BDBDBD;" text="Drag or drop to add files here, or click to browse" />
+                                    <Label style="-fx-font-size: 11px; -fx-text-fill: #BDBDBD;" text="Support: Images, Audio, Document, Video/20MB MAX" />
+                                </VBox>
+                                <!-- Attachments Container for uploaded files -->
+                                <VBox fx:id="attachmentsContainer" spacing="4.0" visible="false" />
+                            </VBox>
+                            
+                            <!-- Report live incident Area -->
+                            <VBox maxWidth="340" spacing="8.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 20; -fx-padding: 16;">
+                                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                    <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #fff;" text="Report live incident" />
+                                    <Label fx:id="recordingStatusLabel" style="-fx-font-size: 12px; -fx-text-fill: #BDBDBD;" text="" />
+                                </HBox>
+                                <VBox fx:id="liveIncidentArea" alignment="CENTER" maxWidth="308" minHeight="120" spacing="8.0" style="-fx-background-color: #332C22; -fx-background-radius: 16; -fx-border-radius: 16; -fx-border-width: 2; -fx-border-color: #6B5A3A; -fx-cursor: hand; -fx-padding: 24;">
+                                    <ImageView fitHeight="32.0" fitWidth="32.0">
+                                        <image>
+                                            <Image url="@../assets/camera.png" />
+                                        </image>
+                                    </ImageView>
+                                    <Label style="-fx-font-size: 13px; -fx-text-fill: #BDBDBD;" text="Tap to start live recording" />
+                                    <Label style="-fx-font-size: 11px; -fx-text-fill: #BDBDBD;" text="Record video/audio evidence in real-time" />
+                                </VBox>
+                            </VBox>
+                            <!-- Bottom Section with rounded corners and background -->
+                            <VBox alignment="CENTER" spacing="18.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 0 0 32 32; -fx-padding: 24 12 48 12; -fx-effect: dropshadow(gaussian, #00000044, 8, 0.2, 0, 2);">
+                                <HBox alignment="CENTER" spacing="16.0">
+                                    <Button style="-fx-background-color: #BCA16A; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="Cancel" onAction="#handleBack">
+                                        <graphic>
+                                            <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                <image>
+                                                    <Image url="@../assets/cancel.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                    <Button fx:id="submitBtn" style="-fx-background-color: #F5D77C; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="Submit" onAction="#handleSubmit">
+                                        <graphic>
+                                            <ImageView fitHeight="20.0" fitWidth="20.0">
+                                                <image>
+                                                    <Image url="@../assets/submit.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <!-- Bottom Bar - Fixed at bottom -->
+        <HBox alignment="CENTER" prefHeight="48.0" spacing="8.0" style="-fx-background-color: #A87A44;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <ImageView fitHeight="24.0" fitWidth="24.0">
+                    <image>
+                        <Image url="@../assets/Home.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>

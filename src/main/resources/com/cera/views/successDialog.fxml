@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: #332C22; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cera.controller.SuccessDialogController">
+    <children>
+        <VBox alignment="CENTER" spacing="20.0" style="-fx-padding: 30;">
+            <!-- Success Icon with Green Circle and Checkmark -->
+            <VBox alignment="CENTER" spacing="0">
+                <Circle radius="40.0" style="-fx-fill: #44FF44; -fx-stroke: #44FF44; -fx-stroke-width: 2;" />
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 0 0;" text="✓" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" />
+            </VBox>
+            
+            <!-- Success Message -->
+            <VBox alignment="CENTER" spacing="8.0">
+                <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white; -fx-alignment: center;" text="Thank You!" />
+                <Label style="-fx-font-size: 16px; -fx-text-fill: #BDBDBD; -fx-alignment: center; -fx-wrap-text: true;" text="Your report has been successfully submitted" wrapText="true" />
+            </VBox>
+            
+            <!-- OK Button -->
+            <Button fx:id="okButton" style="-fx-background-color: #F5D77C; -fx-text-fill: #332C22; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-pref-width: 120; -fx-pref-height: 44;" text="OK" />
+        </VBox>
+    </children>
+</AnchorPane> 
