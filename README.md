@@ -30,6 +30,20 @@ CERA is a modern JavaFX desktop application designed for university campuses in 
 
 ![Home Screen](src/main/resources/com/cera/assets/home1.png)
 
+### Report Form
+
+![Report Form](src/main/resources/com/cera/assets/reportForm.png)
+![Report Form](src/main/resources/com/cera/assets/reportForm1.png)
+
+### Report View
+
+![Report View](src/main/resources/com/cera/assets/reportView.png)
+![Report View](src/main/resources/com/cera/assets/reportView1.png)
+
+### Admin View
+
+![Admin View](src/main/resources/com/cera/assets/adminView.png)
+
 ---
 
 ## Getting Started

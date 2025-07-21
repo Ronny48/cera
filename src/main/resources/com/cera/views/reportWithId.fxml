@@ -256,6 +256,8 @@
                         <!-- Report live incident Area -->
                         <!-- The VBox for 'Report live incident' has been removed -->
                         
+                        <!-- Status Label for messages -->
+                        <Label fx:id="statusLabel" alignment="CENTER" maxWidth="340" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8; -fx-text-fill: #4CAF50;" visible="false" />
                         <!-- Bottom Section with rounded corners and background -->
                         <VBox alignment="CENTER" spacing="18.0" style="-fx-background-color: #6B5A3A; -fx-background-radius: 0 0 32 32; -fx-padding: 24 12 48 12; -fx-effect: dropshadow(gaussian, #00000044, 8, 0.2, 0, 2);">
                             <HBox alignment="CENTER" spacing="16.0">
