@@ -234,7 +234,7 @@
                                         </ImageView>
                                         <Label style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #6ED1E7;" text="Attach all the necessary files here" />
                                     </HBox>
-                                    <Label maxWidth="300.0" style="-fx-font-size: 12px; -fx-text-fill: #B6D6E7; -fx-wrap-text: true;" text="Let your report be as detailed as possible, it's very crucial and vital for the safety of the people and yourself." wrapText="true" />
+                                    <Label maxWidth="300.0" style="-fx-font-size: 12px; -fx-text-fill: #B6D6E7; -fx-wrap-text: true;" text="Let your report be as detailed as possible." wrapText="true" />
                                 </VBox>
                             </HBox>
                             <!-- Attachments Area -->
@@ -246,8 +246,8 @@
                                             <Image url="@../assets/add.png" />
                                         </image>
                                     </ImageView>
-                                    <Label style="-fx-font-size: 13px; -fx-text-fill: #BDBDBD;" text="Drag or drop to add files here, or click to browse" />
-                                    <Label style="-fx-font-size: 11px; -fx-text-fill: #BDBDBD;" text="Support: Images, Audio, Document, Video/20MB MAX" />
+                                    <Label style="-fx-font-size: 13px; -fx-text-fill: #BDBDBD;" text="Drag or drop to add files here, or click." />
+                                    <Label style="-fx-font-size: 11px; -fx-text-fill: #BDBDBD;" text="Support: Images, Audio, Document, Video/20MB" />
                                 </VBox>
                                 <!-- Attachments Container for uploaded files -->
                                 <VBox fx:id="attachmentsContainer" spacing="4.0" visible="false" />
