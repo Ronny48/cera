@@ -297,17 +297,23 @@
             </children>
         </HBox>
         <HBox alignment="TOP_RIGHT" spacing="0" AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <HBox.margin>
+                <Insets top="2" right="2" bottom="2" left="2" />
+            </HBox.margin>
             <children>
                 <Button fx:id="avatarButton" onAction="#handleAvatarClick" style="-fx-background-color: transparent; -fx-padding: 8;">
                     <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="32.0">
-                            <clip>
-                                <Circle centerX="16" centerY="16" radius="16" />
-                            </clip>
-                            <image>
-                                <Image url="@../assets/avatar.png" />
-                            </image>
-                        </ImageView>
+                        <HBox alignment="CENTER" spacing="6.0">
+                            <Label text="Logout" style="-fx-text-fill: #fff; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                            <ImageView fitHeight="32.0" fitWidth="32.0">
+                                <clip>
+                                    <Circle centerX="16" centerY="16" radius="16" />
+                                </clip>
+                                <image>
+                                    <Image url="@../assets/avatar.png" />
+                                </image>
+                            </ImageView>
+                        </HBox>
                     </graphic>
                 </Button>
             </children>

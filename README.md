@@ -1,3 +1,7 @@
+[![Java](https://img.shields.io/badge/java-17%2B-blue)](https://adoptopenjdk.net/)
+[![License](https://img.shields.io/badge/license-Educational-lightgrey)](#license)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
+
 # CERA (Campus Emergency Reporting App)
 
 CERA is a modern JavaFX desktop application designed for university campuses in Ghana to securely report incidents, either anonymously or with identification. The app provides a safe, user-friendly platform for students and staff to report emergencies, view reports, and for admins to manage and resolve cases.
@@ -69,6 +73,39 @@ CERA is a modern JavaFX desktop application designed for university campuses in 
    ```bash
    mvn javafx:run
    ```
+
+---
+
+## Running the Application from the Fat JAR (Recommended)
+
+After building the project, you can run the application using the generated fat JAR file. This is the easiest way to distribute and launch the app on any machine with Java and JavaFX installed.
+
+### Prerequisites
+
+- Java 11 or newer (Java 17+ recommended)
+- JavaFX SDK (download from https://gluonhq.com/products/javafx/)
+
+### Steps
+
+1. **Build the fat JAR:**
+
+   ```bash
+   mvn clean package
+   ```
+
+   This will generate `target/cera-1.0.jar` (the fat JAR with all dependencies).
+
+2. **Run the JAR:**
+
+   ```bash
+   java --module-path "C:/Program Files/Java/javafx-sdk-24.0.1/lib" --add-modules javafx.controls,javafx.fxml -jar target/cera-1.0.jar
+   ```
+
+   - Replace the path after `--module-path` with the location of your JavaFX SDK's `lib` folder if different.
+   - On Linux/Mac, use `/path/to/javafx-sdk-XX/lib` as appropriate.
+
+3. **Troubleshooting:**
+   - If you see an error about missing JavaFX runtime components, double-check your JavaFX SDK path and that you have the correct version for your OS and Java version.
 
 ---
 
