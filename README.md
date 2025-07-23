@@ -4,7 +4,7 @@
 
 # CERA (Campus Emergency Reporting App)
 
-CERA is a modern JavaFX desktop application designed for university campuses in Ghana to securely report incidents, either anonymously or with identification. The app provides a safe, user-friendly platform for students and staff to report emergencies, view reports, and for admins to manage and resolve cases.
+CERA is a modern JavaFX desktop application with a mobile view, designed for university campuses in Ghana to securely report incidents, either anonymously or with identification. The app provides a safe, user-friendly platform for students and staff to report emergencies, view reports, and for admins to manage and resolve cases.
 
 ---
 
