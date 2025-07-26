@@ -45,6 +45,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ButtonBar;
 
+/**
+ * Controller for the anonymous report form
+ * 
+ * Handles anonymous incident report submission with file upload functionality.
+ * Provides form validation, file attachment support, and user interface
+ * interactions.
+ * 
+ * @author CERA Development Team
+ * @version 1.0
+ */
 public class ReportFormController implements Initializable {
   @FXML
   private Button securityBtn;
@@ -443,16 +453,19 @@ public class ReportFormController implements Initializable {
     try {
       App.setRoot("home");
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("Failed to navigate to home after success: " + e.getMessage());
     }
   }
 
+  /**
+   * Navigates back to the home page
+   */
   @FXML
   private void handleBack() {
     try {
       App.setRoot("home");
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("Failed to navigate to home: " + e.getMessage());
     }
   }
 
@@ -468,7 +481,7 @@ public class ReportFormController implements Initializable {
         try {
           App.setRoot("home");
         } catch (IOException e) {
-          e.printStackTrace();
+          System.err.println("Failed to navigate to home after cancel: " + e.getMessage());
         }
       }
     });
@@ -481,22 +494,25 @@ public class ReportFormController implements Initializable {
     alert.setHeaderText(null);
     alert.showAndWait().ifPresent(response -> {
       if (response == ButtonType.YES) {
-        com.cera.App.setCurrentUserId(null);
+        App.setCurrentUserId(null);
         try {
-          com.cera.App.setRoot("logIn");
+          App.setRoot("logIn");
         } catch (IOException e) {
-          e.printStackTrace();
+          System.err.println("Failed to logout: " + e.getMessage());
         }
       }
     });
   }
 
+  /**
+   * Navigates to the home page
+   */
   @FXML
   private void goHome() {
     try {
-      com.cera.App.setRoot("home");
+      App.setRoot("home");
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("Failed to navigate to home: " + e.getMessage());
     }
   }
 }

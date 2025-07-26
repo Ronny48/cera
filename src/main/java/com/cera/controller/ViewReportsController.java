@@ -23,6 +23,16 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ButtonType;
 
+/**
+ * Controller for the reports view page
+ * 
+ * Handles display, filtering, and searching of incident reports.
+ * Provides functionality for users to view all reports and filter by various
+ * criteria.
+ * 
+ * @author CERA Development Team
+ * @version 1.0
+ */
 public class ViewReportsController {
 
   @FXML
@@ -46,50 +56,80 @@ public class ViewReportsController {
   private List<ReportDAO.Report> allReports;
   private List<ReportDAO.Report> filteredReports;
 
+  /**
+   * Initializes the reports view page
+   * Loads reports and sets up filtering functionality
+   */
   @FXML
   public void initialize() {
-    // Fetch reports from the database
+    // Load reports from database
     allReports = ReportDAO.getAllReports();
     filteredReports = new ArrayList<>(allReports);
+
     initializeFilters();
+
+    // Set up search functionality
     searchField.setOnKeyReleased(event -> handleSearch(null));
+
     if (myReportsToggle != null) {
       myReportsToggle.setOnAction(e -> applyFilters(searchField.getText().toLowerCase().trim()));
       myReportsToggle.setDisable(App.getCurrentUserId() == null);
     }
+
     updateReportsDisplay();
   }
 
+  /**
+   * Initializes filter controls with available categories
+   */
   private void initializeFilters() {
-    // Initialize category filter
     categoryFilter.getItems().addAll("All Categories", "Theft", "Health", "Security", "Harassment", "Bullying",
         "Emergency", "Other");
     categoryFilter.setValue("All Categories");
-    // Removed status filter initialization
   }
 
+  /**
+   * Navigates back to the home page
+   * 
+   * @param event Action event
+   */
   @FXML
   private void handleBack(ActionEvent event) {
     try {
       App.setRoot("home");
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("Failed to navigate to home: " + e.getMessage());
       showError("Navigation Error", "Could not return to home page.");
     }
   }
 
+  /**
+   * Handles search functionality
+   * 
+   * @param event Action event
+   */
   @FXML
   private void handleSearch(ActionEvent event) {
     String searchTerm = searchField.getText().toLowerCase().trim();
     applyFilters(searchTerm);
   }
 
+  /**
+   * Handles category filter changes
+   * 
+   * @param event Action event
+   */
   @FXML
   private void handleFilter(ActionEvent event) {
     String searchTerm = searchField.getText().toLowerCase().trim();
     applyFilters(searchTerm);
   }
 
+  /**
+   * Clears all filters and resets the view
+   * 
+   * @param event Action event
+   */
   @FXML
   private void handleClearFilters(ActionEvent event) {
     searchField.clear();
@@ -97,11 +137,17 @@ public class ViewReportsController {
     applyFilters("");
   }
 
+  /**
+   * Applies filters to the reports list
+   * 
+   * @param searchTerm Search term to filter by
+   */
   private void applyFilters(String searchTerm) {
     filteredReports.clear();
     String selectedCategory = categoryFilter.getValue();
     boolean filterMyReports = myReportsToggle != null && myReportsToggle.isSelected() && App.getCurrentUserId() != null;
     Integer currentUserId = App.getCurrentUserId();
+
     for (ReportDAO.Report report : allReports) {
       boolean matchesSearch = searchTerm.isEmpty() ||
           report.category.toLowerCase().contains(searchTerm) ||
@@ -110,6 +156,7 @@ public class ViewReportsController {
       boolean matchesCategory = selectedCategory.equals("All Categories") ||
           report.category.equals(selectedCategory);
       boolean matchesUser = !filterMyReports || (report.userId != null && report.userId.equals(currentUserId));
+
       if (matchesSearch && matchesCategory && matchesUser) {
         filteredReports.add(report);
       }
@@ -117,6 +164,9 @@ public class ViewReportsController {
     updateReportsDisplay();
   }
 
+  /**
+   * Updates the display of reports in the container
+   */
   private void updateReportsDisplay() {
     reportsContainer.getChildren().clear();
 
@@ -133,9 +183,17 @@ public class ViewReportsController {
     }
   }
 
+  /**
+   * Creates a visual representation of a report
+   * 
+   * @param report The report to display
+   * @return VBox containing the report display
+   */
   private VBox createReportBox(ReportDAO.Report report) {
     VBox reportBox = new VBox(8.0);
     reportBox.setStyle("-fx-background-color: #4A4A4A; -fx-background-radius: 12; -fx-padding: 16;");
+
+    // Create header with category icon, title, and timestamp
     HBox header = new HBox(8.0);
     header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
     Label iconLabel = new Label(getCategoryIcon(report.category));
@@ -147,10 +205,13 @@ public class ViewReportsController {
     Label timeLabel = new Label(report.createdAt);
     timeLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #B38753;");
     header.getChildren().addAll(iconLabel, titleLabel, separator, timeLabel);
+
+    // Create description label
     Label descriptionLabel = new Label(report.description);
     descriptionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #E6E6E6; -fx-wrap-text: true;");
-    // Attachments
-    java.util.List<AttachmentDAO.Attachment> attachments = AttachmentDAO.getAttachmentsByReportId(report.id);
+
+    // Create attachments section
+    List<AttachmentDAO.Attachment> attachments = AttachmentDAO.getAttachmentsByReportId(report.id);
     VBox attachmentsBox = new VBox(4.0);
     if (!attachments.isEmpty()) {
       Label attachmentsTitle = new Label("Attachments:");
@@ -162,7 +223,8 @@ public class ViewReportsController {
         attachmentsBox.getChildren().add(attLabel);
       }
     }
-    // Status HBox
+
+    // Create status section
     HBox statusBox = new HBox(8.0);
     statusBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
     Label statusTitle = new Label("Status:");
@@ -171,10 +233,17 @@ public class ViewReportsController {
     statusValue.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; "
         + (report.resolved ? "-fx-text-fill: #4CAF50;" : "-fx-text-fill: #FF9800;"));
     statusBox.getChildren().addAll(statusTitle, statusValue);
+
     reportBox.getChildren().addAll(header, descriptionLabel, attachmentsBox, statusBox);
     return reportBox;
   }
 
+  /**
+   * Formats a timestamp to show relative time
+   * 
+   * @param timestamp The timestamp to format
+   * @return Formatted time string
+   */
   private String formatTimeAgo(LocalDateTime timestamp) {
     LocalDateTime now = LocalDateTime.now();
     long hours = java.time.Duration.between(timestamp, now).toHours();
@@ -191,6 +260,12 @@ public class ViewReportsController {
     }
   }
 
+  /**
+   * Gets the color for a status
+   * 
+   * @param status The status to get color for
+   * @return Color string
+   */
   private String getStatusColor(String status) {
     switch (status) {
       case "Resolved":
@@ -206,6 +281,12 @@ public class ViewReportsController {
     }
   }
 
+  /**
+   * Gets the emoji icon for a category
+   * 
+   * @param category The category to get icon for
+   * @return Emoji string
+   */
   private String getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
       case "theft":
@@ -225,6 +306,12 @@ public class ViewReportsController {
     }
   }
 
+  /**
+   * Shows an error dialog
+   * 
+   * @param title   Error title
+   * @param content Error content
+   */
   private void showError(String title, String content) {
     Alert alert = new Alert(AlertType.ERROR);
     alert.setTitle(title);
@@ -233,6 +320,9 @@ public class ViewReportsController {
     alert.showAndWait();
   }
 
+  /**
+   * Handles user logout with confirmation dialog
+   */
   @FXML
   private void handleAvatarClick() {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to logout?", ButtonType.YES, ButtonType.NO);
@@ -240,11 +330,11 @@ public class ViewReportsController {
     alert.setHeaderText(null);
     alert.showAndWait().ifPresent(response -> {
       if (response == ButtonType.YES) {
-        com.cera.App.setCurrentUserId(null);
+        App.setCurrentUserId(null);
         try {
-          com.cera.App.setRoot("logIn");
+          App.setRoot("logIn");
         } catch (IOException e) {
-          e.printStackTrace();
+          System.err.println("Failed to logout: " + e.getMessage());
         }
       }
     });

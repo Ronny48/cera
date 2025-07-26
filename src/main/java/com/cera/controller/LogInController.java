@@ -9,6 +9,15 @@ import com.cera.App;
 import java.io.IOException;
 import com.cera.UserDAO;
 
+/**
+ * Controller for the login page
+ * 
+ * Handles user authentication and navigation to signup page.
+ * Validates user credentials and manages user session.
+ * 
+ * @author CERA Development Team
+ * @version 1.0
+ */
 public class LogInController {
 
   @FXML
@@ -26,6 +35,10 @@ public class LogInController {
   @FXML
   private Label statusLabel;
 
+  /**
+   * Handles user login attempt
+   * Validates credentials and navigates to appropriate page based on user role
+   */
   @FXML
   private void handleLogin() {
     String username = usernameField.getText();
@@ -35,13 +48,14 @@ public class LogInController {
       statusLabel.setText("Please enter both username and password");
       return;
     }
+
     String role = UserDAO.validateLoginAndGetRole(username, password);
     if (role != null) {
       Integer userId = UserDAO.getUserIdByEmail(username);
       App.setCurrentUserId(userId);
       App.setCurrentUserRole(role);
       statusLabel.setText("Login successful");
-      System.out.println("Login successful for user: " + username);
+
       try {
         if ("admin".equals(role)) {
           App.setRoot("adminPage");
@@ -50,21 +64,23 @@ public class LogInController {
         }
       } catch (IOException e) {
         statusLabel.setText("Failed to load page");
-        e.printStackTrace();
+        System.err.println("Failed to navigate after login: " + e.getMessage());
       }
     } else {
       statusLabel.setText("Invalid email or password");
-      System.out.println("Login failed for user: " + username);
     }
   }
 
+  /**
+   * Navigates to the signup page
+   */
   @FXML
   private void handleSignup() {
     try {
       App.setRoot("signup");
     } catch (IOException e) {
       statusLabel.setText("Failed to load signup page");
-      e.printStackTrace();
+      System.err.println("Failed to load signup page: " + e.getMessage());
     }
   }
 }
