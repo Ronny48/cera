@@ -1,5 +1,6 @@
 package com.cera.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,28 +8,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cera.App;
-import com.cera.ReportDAO;
 import com.cera.AttachmentDAO;
+import com.cera.ReportDAO;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 
 /**
  * Controller for the reports view page
  * 
  * Handles display, filtering, and searching of incident reports.
  * Provides functionality for users to view all reports and filter by various
- * criteria.
+ * criteria. Includes image preview functionality for attached images.
  * 
  * @author CERA Development Team
  * @version 1.0
@@ -98,8 +106,8 @@ public class ViewReportsController {
     try {
       App.setRoot("home");
     } catch (IOException e) {
-      System.err.println("Failed to navigate to home: " + e.getMessage());
-      showError("Navigation Error", "Could not return to home page.");
+      System.err.println("Navigation error: " + e.getMessage());
+      showError("Navigation Error", "Failed to navigate to home page.");
     }
   }
 
@@ -121,12 +129,11 @@ public class ViewReportsController {
    */
   @FXML
   private void handleFilter(ActionEvent event) {
-    String searchTerm = searchField.getText().toLowerCase().trim();
-    applyFilters(searchTerm);
+    applyFilters(searchField.getText().toLowerCase().trim());
   }
 
   /**
-   * Clears all filters and resets the view
+   * Clears all filters and search terms
    * 
    * @param event Action event
    */
@@ -134,6 +141,9 @@ public class ViewReportsController {
   private void handleClearFilters(ActionEvent event) {
     searchField.clear();
     categoryFilter.setValue("All Categories");
+    if (myReportsToggle != null) {
+      myReportsToggle.setSelected(false);
+    }
     applyFilters("");
   }
 
@@ -144,23 +154,24 @@ public class ViewReportsController {
    */
   private void applyFilters(String searchTerm) {
     filteredReports.clear();
-    String selectedCategory = categoryFilter.getValue();
-    boolean filterMyReports = myReportsToggle != null && myReportsToggle.isSelected() && App.getCurrentUserId() != null;
-    Integer currentUserId = App.getCurrentUserId();
 
     for (ReportDAO.Report report : allReports) {
       boolean matchesSearch = searchTerm.isEmpty() ||
+          report.description.toLowerCase().contains(searchTerm) ||
           report.category.toLowerCase().contains(searchTerm) ||
-          report.location.toLowerCase().contains(searchTerm) ||
-          report.description.toLowerCase().contains(searchTerm);
-      boolean matchesCategory = selectedCategory.equals("All Categories") ||
-          report.category.equals(selectedCategory);
-      boolean matchesUser = !filterMyReports || (report.userId != null && report.userId.equals(currentUserId));
+          report.location.toLowerCase().contains(searchTerm);
+
+      boolean matchesCategory = categoryFilter.getValue().equals("All Categories") ||
+          report.category.equals(categoryFilter.getValue());
+
+      boolean matchesUser = !myReportsToggle.isSelected() ||
+          (App.getCurrentUserId() != null && report.userId == App.getCurrentUserId());
 
       if (matchesSearch && matchesCategory && matchesUser) {
         filteredReports.add(report);
       }
     }
+
     updateReportsDisplay();
   }
 
@@ -184,7 +195,7 @@ public class ViewReportsController {
   }
 
   /**
-   * Creates a visual representation of a report
+   * Creates a visual representation of a report with image previews
    * 
    * @param report The report to display
    * @return VBox containing the report display
@@ -210,17 +221,34 @@ public class ViewReportsController {
     Label descriptionLabel = new Label(report.description);
     descriptionLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #E6E6E6; -fx-wrap-text: true;");
 
-    // Create attachments section
+    // Create attachments section with image previews
     List<AttachmentDAO.Attachment> attachments = AttachmentDAO.getAttachmentsByReportId(report.id);
-    VBox attachmentsBox = new VBox(4.0);
+    VBox attachmentsBox = new VBox(8.0);
     if (!attachments.isEmpty()) {
       Label attachmentsTitle = new Label("Attachments:");
       attachmentsTitle.setStyle("-fx-font-size: 13px; -fx-text-fill: #B38753; -fx-font-weight: bold;");
       attachmentsBox.getChildren().add(attachmentsTitle);
+
+      // Create horizontal container for image thumbnails
+      HBox imageContainer = new HBox(8.0);
+      imageContainer.setAlignment(Pos.CENTER_LEFT);
+
       for (AttachmentDAO.Attachment att : attachments) {
-        Label attLabel = new Label(att.filePath + " (" + att.fileType + ")");
-        attLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #F5D77C;");
-        attachmentsBox.getChildren().add(attLabel);
+        if (isImageFile(att.fileType)) {
+          // Create image thumbnail
+          VBox imageBox = createImageThumbnail(att);
+          imageContainer.getChildren().add(imageBox);
+        } else {
+          // Create file link for non-image files
+          Label fileLabel = new Label("📎 " + getFileName(att.filePath) + " (" + att.fileType + ")");
+          fileLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #F5D77C; -fx-cursor: hand;");
+          fileLabel.setOnMouseClicked(e -> openFile(att.filePath));
+          attachmentsBox.getChildren().add(fileLabel);
+        }
+      }
+
+      if (!imageContainer.getChildren().isEmpty()) {
+        attachmentsBox.getChildren().add(imageContainer);
       }
     }
 
@@ -236,6 +264,171 @@ public class ViewReportsController {
 
     reportBox.getChildren().addAll(header, descriptionLabel, attachmentsBox, statusBox);
     return reportBox;
+  }
+
+  /**
+   * Creates an image thumbnail for display
+   * 
+   * @param attachment The attachment containing the image
+   * @return VBox containing the image thumbnail
+   */
+  private VBox createImageThumbnail(AttachmentDAO.Attachment attachment) {
+    VBox imageBox = new VBox(4.0);
+    imageBox.setAlignment(Pos.CENTER);
+
+    try {
+      File imageFile = new File(attachment.filePath);
+      if (imageFile.exists()) {
+        // Create image view with thumbnail size
+        ImageView imageView = new ImageView(new Image(imageFile.toURI().toString()));
+        imageView.setFitWidth(80);
+        imageView.setFitHeight(80);
+        imageView.setPreserveRatio(true);
+        imageView.setStyle("-fx-background-color: #333; -fx-background-radius: 8;");
+
+        // Add click handler to show full image
+        imageView.setOnMouseClicked(e -> showFullImage(attachment.filePath, getFileName(attachment.filePath)));
+
+        // Add hover effect
+        imageView.setOnMouseEntered(
+            e -> imageView.setStyle("-fx-background-color: #555; -fx-background-radius: 8; -fx-cursor: hand;"));
+        imageView.setOnMouseExited(e -> imageView.setStyle("-fx-background-color: #333; -fx-background-radius: 8;"));
+
+        // Add file name label
+        Label fileNameLabel = new Label(getFileName(attachment.filePath));
+        fileNameLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #F5D77C; -fx-alignment: center;");
+        fileNameLabel.setMaxWidth(80);
+        fileNameLabel.setWrapText(true);
+
+        imageBox.getChildren().addAll(imageView, fileNameLabel);
+      } else {
+        // Show placeholder if file doesn't exist
+        Label placeholder = new Label("❌");
+        placeholder.setStyle("-fx-font-size: 24px; -fx-text-fill: #666;");
+        imageBox.getChildren().add(placeholder);
+      }
+    } catch (Exception e) {
+      System.err.println("Error loading image thumbnail: " + e.getMessage());
+      Label errorLabel = new Label("⚠️");
+      errorLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: #FF9800;");
+      imageBox.getChildren().add(errorLabel);
+    }
+
+    return imageBox;
+  }
+
+  /**
+   * Shows a full-size image in a dialog
+   * 
+   * @param imagePath Path to the image file
+   * @param fileName  Name of the file
+   */
+  private void showFullImage(String imagePath, String fileName) {
+    try {
+      File imageFile = new File(imagePath);
+      if (!imageFile.exists()) {
+        showError("File Not Found", "The image file could not be found.");
+        return;
+      }
+
+      // Create dialog
+      Dialog<Void> dialog = new Dialog<>();
+      dialog.setTitle("Image Preview: " + fileName);
+      dialog.initModality(Modality.APPLICATION_MODAL);
+
+      // Create dialog pane
+      DialogPane dialogPane = new DialogPane();
+      dialog.setDialogPane(dialogPane);
+
+      // Create image view
+      ImageView fullImageView = new ImageView(new Image(imageFile.toURI().toString()));
+      fullImageView.setFitWidth(600);
+      fullImageView.setFitHeight(400);
+      fullImageView.setPreserveRatio(true);
+
+      // Create scroll pane for large images
+      ScrollPane scrollPane = new ScrollPane(fullImageView);
+      scrollPane.setFitToWidth(true);
+      scrollPane.setFitToHeight(true);
+      scrollPane.setPrefWidth(620);
+      scrollPane.setPrefHeight(420);
+
+      dialogPane.setContent(scrollPane);
+
+      // Add close button
+      dialog.setResultConverter(dialogButton -> null);
+      dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+      // Show dialog
+      dialog.showAndWait();
+
+    } catch (Exception e) {
+      System.err.println("Error showing full image: " + e.getMessage());
+      showError("Image Error", "Failed to display the image.");
+    }
+  }
+
+  /**
+   * Opens a file using the system default application
+   * 
+   * @param filePath Path to the file to open
+   */
+  private void openFile(String filePath) {
+    try {
+      File file = new File(filePath);
+      if (file.exists()) {
+        // Use ProcessBuilder to open file with system default application
+        String os = System.getProperty("os.name").toLowerCase();
+        ProcessBuilder pb;
+
+        if (os.contains("win")) {
+          // Windows
+          pb = new ProcessBuilder("cmd", "/c", "start", "", filePath);
+        } else if (os.contains("mac")) {
+          // macOS
+          pb = new ProcessBuilder("open", filePath);
+        } else {
+          // Linux/Unix
+          pb = new ProcessBuilder("xdg-open", filePath);
+        }
+
+        pb.start();
+      } else {
+        showError("File Not Found", "The file could not be found.");
+      }
+    } catch (Exception e) {
+      System.err.println("Error opening file: " + e.getMessage());
+      showError("File Error", "Failed to open the file. You can manually open: " + filePath);
+    }
+  }
+
+  /**
+   * Checks if a file type is an image
+   * 
+   * @param fileType The file type to check
+   * @return true if the file is an image, false otherwise
+   */
+  private boolean isImageFile(String fileType) {
+    if (fileType == null)
+      return false;
+    String lowerType = fileType.toLowerCase();
+    return lowerType.contains("image") ||
+        lowerType.contains("jpg") || lowerType.contains("jpeg") ||
+        lowerType.contains("png") || lowerType.contains("gif") ||
+        lowerType.contains("bmp") || lowerType.contains("webp");
+  }
+
+  /**
+   * Extracts the file name from a file path
+   * 
+   * @param filePath The full file path
+   * @return The file name
+   */
+  private String getFileName(String filePath) {
+    if (filePath == null)
+      return "Unknown";
+    File file = new File(filePath);
+    return file.getName();
   }
 
   /**
@@ -267,42 +460,40 @@ public class ViewReportsController {
    * @return Color string
    */
   private String getStatusColor(String status) {
-    switch (status) {
-      case "Resolved":
+    switch (status.toLowerCase()) {
+      case "resolved":
         return "#4CAF50";
-      case "Under Investigation":
+      case "under investigation":
         return "#FF9800";
-      case "Pending":
+      case "pending":
         return "#2196F3";
-      case "Closed":
-        return "#9E9E9E";
       default:
-        return "#FF9800";
+        return "#B38753";
     }
   }
 
   /**
-   * Gets the emoji icon for a category
+   * Gets the appropriate icon for a category
    * 
    * @param category The category to get icon for
-   * @return Emoji string
+   * @return Icon string
    */
   private String getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
       case "theft":
-        return "🚨";
-      case "health":
-        return "⚠️";
-      case "security":
         return "🔒";
+      case "health":
+        return "🏥";
+      case "security":
+        return "🛡️";
       case "harassment":
         return "🚨";
       case "bullying":
-        return "🚨";
-      case "emergency":
         return "⚠️";
+      case "emergency":
+        return "🚨";
       default:
-        return "📄";
+        return "📋";
     }
   }
 
@@ -321,22 +512,16 @@ public class ViewReportsController {
   }
 
   /**
-   * Handles user logout with confirmation dialog
+   * Handles logout functionality
    */
   @FXML
   private void handleAvatarClick() {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to logout?", ButtonType.YES, ButtonType.NO);
-    alert.setTitle("Logout");
-    alert.setHeaderText(null);
-    alert.showAndWait().ifPresent(response -> {
-      if (response == ButtonType.YES) {
-        App.setCurrentUserId(null);
-        try {
-          App.setRoot("logIn");
-        } catch (IOException e) {
-          System.err.println("Failed to logout: " + e.getMessage());
-        }
-      }
-    });
+    try {
+      App.setCurrentUserId(null);
+      App.setRoot("logIn");
+    } catch (IOException e) {
+      System.err.println("Logout error: " + e.getMessage());
+      showError("Logout Error", "Failed to logout. Please try again.");
+    }
   }
 }
